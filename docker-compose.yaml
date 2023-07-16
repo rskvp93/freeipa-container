@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  freeipa-almalinux9:
+    build:
+      context: .
+      dockerfile: Dockerfile.almalinux-9
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    container_name: freeipa-server-almalinux9
+    hostname: ipa01.lab.local
+    network_mode: bridge
+    user: root
+    stdin_open: true 
+    tty: true
+    # privileged: true
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 53:53/udp
+      - 53:53/tcp
+      - 80:80/tcp
+      - 443:443/tcp
+      - 389:389/tcp
+      - 636:636/tcp
+      - 88:88/tcp
+      - 464:464/tcp
+      - 88:88/udp
+      - 464:464/udp
+      - 123:123/udp
+    environment:
+      - IPA_SERVER_IP=192.168.2.138
+    volumes:
+      - ./data:/data:Z
+      - ./init-data:/usr/local/sbin/init
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
